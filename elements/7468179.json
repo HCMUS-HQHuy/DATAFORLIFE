@@ -3204,6 +3204,7 @@
     "boundary": "administrative",
     "name": "Xã Bình Khánh",
     "type": "boundary",
-    "wikidata": "Q10742427"
+    "wikidata": "Q10742427",
+    "flood_depth": 71
   }
 }

@@ -3764,6 +3764,7 @@
     "boundary": "administrative",
     "name": "Xã Tân Nhựt",
     "type": "boundary",
-    "wikidata": "Q10830698"
+    "wikidata": "Q10830698",
+    "flood_depth": 0
   }
 }

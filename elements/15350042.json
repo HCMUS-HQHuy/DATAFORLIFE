@@ -8440,6 +8440,7 @@
     "boundary": "administrative",
     "name": "Xã Phước Thành",
     "type": "boundary",
-    "wikidata": "Q2708104"
+    "wikidata": "Q2708104",
+    "flood_depth": 0
   }
 }

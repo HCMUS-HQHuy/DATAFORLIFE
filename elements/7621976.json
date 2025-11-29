@@ -2251,6 +2251,7 @@
     "boundary": "administrative",
     "name": "Xã An Nhơn Tây",
     "type": "boundary",
-    "wikidata": "Q10733261"
+    "wikidata": "Q10733261",
+    "flood_depth": 0
   }
 }

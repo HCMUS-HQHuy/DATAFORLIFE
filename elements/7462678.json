@@ -3109,6 +3109,7 @@
     "boundary": "administrative",
     "name": "Xã Hưng Long",
     "type": "boundary",
-    "wikidata": "Q16480946"
+    "wikidata": "Q16480946",
+    "flood_depth": 0
   }
 }

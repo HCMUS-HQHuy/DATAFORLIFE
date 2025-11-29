@@ -12073,6 +12073,7 @@
     "boundary": "administrative",
     "name": "Xã Dầu Tiếng",
     "type": "boundary",
-    "wikidata": "Q1905713"
+    "wikidata": "Q1905713",
+    "flood_depth": 0
   }
 }

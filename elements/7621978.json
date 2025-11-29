@@ -1489,6 +1489,7 @@
     "boundary": "administrative",
     "name": "Xã Bình Mỹ",
     "type": "boundary",
-    "wikidata": "Q5005103"
+    "wikidata": "Q5005103",
+    "flood_depth": 0
   }
 }

@@ -7899,6 +7899,7 @@
     "boundary": "administrative",
     "name": "Xã An Long",
     "type": "boundary",
-    "wikidata": "Q2690544"
+    "wikidata": "Q2690544",
+    "flood_depth": 1550
   }
 }

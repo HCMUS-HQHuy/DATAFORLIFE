@@ -30,7 +30,7 @@ class AdminService {
             borders: res.data.elements
         };
     }
-    async getBoard(id: string): Promise<any> {
+    getBoard(id: string): any {
         if (!id) throw new Error("Tên element bắt buộc");
 
         // Chuyển name sang safeName giống lúc lưu file
@@ -41,13 +41,13 @@ class AdminService {
             .trim();
 
         const filePath = path.join(this.elementsDir, `${safeName}.json`);
-        console.log(filePath);
 
         if (!fs.existsSync(filePath)) {
-            throw new Error(`File element '${safeName}.json' không tồn tại`);
+            console.log(`File element '${safeName}.json' không tồn tại`);
+            return null;
         }
 
-        const fileContent = await fs.promises.readFile(filePath, "utf-8");
+        const fileContent = fs.readFileSync(filePath, "utf-8");
         return JSON.parse(fileContent);
     }
 

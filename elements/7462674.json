@@ -3234,6 +3234,7 @@
     "boundary": "administrative",
     "name": "Xã Bình Chánh",
     "type": "boundary",
-    "wikidata": "Q10742366"
+    "wikidata": "Q10742366",
+    "flood_depth": 0
   }
 }

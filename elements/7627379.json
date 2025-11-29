@@ -1120,6 +1120,7 @@
     "boundary": "administrative",
     "name": "Xã Phú Hòa Đông",
     "type": "boundary",
-    "wikidata": "Q10805930"
+    "wikidata": "Q10805930",
+    "flood_depth": 92
   }
 }

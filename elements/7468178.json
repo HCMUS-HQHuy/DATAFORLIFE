@@ -2272,6 +2272,7 @@
     "boundary": "administrative",
     "name": "Xã An Thới Đông",
     "type": "boundary",
-    "wikidata": "Q10733354"
+    "wikidata": "Q10733354",
+    "flood_depth": 0
   }
 }

@@ -9989,6 +9989,7 @@
     "boundary": "administrative",
     "name": "Xã Thường Tân",
     "type": "boundary",
-    "wikidata": "Q4618057"
+    "wikidata": "Q4618057",
+    "flood_depth": 0
   }
 }

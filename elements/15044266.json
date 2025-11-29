@@ -5550,6 +5550,7 @@
     "boundary": "administrative",
     "name": "Xã Bàu Bàng",
     "type": "boundary",
-    "wikidata": "Q2754544"
+    "wikidata": "Q2754544",
+    "flood_depth": 223.5
   }
 }

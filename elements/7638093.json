@@ -1072,6 +1072,7 @@
     "boundary": "administrative",
     "name": "Xã Hóc Môn",
     "type": "boundary",
-    "wikidata": "Q10771197"
+    "wikidata": "Q10771197",
+    "flood_depth": 0
   }
 }

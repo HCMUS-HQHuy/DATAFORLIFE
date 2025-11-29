@@ -840,6 +840,7 @@
     "boundary": "administrative",
     "name": "Xã Tân Vĩnh Lộc",
     "type": "boundary",
-    "wikidata": "Q10807061"
+    "wikidata": "Q10807061",
+    "flood_depth": 0
   }
 }

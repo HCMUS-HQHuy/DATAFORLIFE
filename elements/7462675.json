@@ -2896,6 +2896,7 @@
     "boundary": "administrative",
     "name": "Xã Bình Hưng",
     "type": "boundary",
-    "wikidata": "Q10742415"
+    "wikidata": "Q10742415",
+    "flood_depth": 0
   }
 }

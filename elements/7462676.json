@@ -1507,6 +1507,7 @@
     "boundary": "administrative",
     "name": "Xã Bình Lợi",
     "type": "boundary",
-    "wikidata": "Q10742460"
+    "wikidata": "Q10742460",
+    "flood_depth": 0
   }
 }

@@ -40,8 +40,8 @@ POST {{host}}{{apiPrefix}}/admin/selected-area
 Content-Type: application/json
 
 {
-	"north": 11.0,
-    "south": 10.0,
-    "east": 50.0,
+	"north": 11.159871119602483,
+    "south": 10.375438568758025,
+    "east": 107.02445924184507,
     "west": 106.35742462311387
 }

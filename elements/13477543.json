@@ -4807,6 +4807,7 @@
     "population:date": "2025-07-01",
     "source:population": "gis.vn",
     "type": "boundary",
-    "wikidata": "Q2669692"
+    "wikidata": "Q2669692",
+    "flood_depth": 570
   }
 }

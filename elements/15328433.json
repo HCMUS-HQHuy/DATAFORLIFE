@@ -13652,6 +13652,7 @@
     "boundary": "administrative",
     "name": "Xã Minh Thạnh",
     "type": "boundary",
-    "wikidata": "Q2781512"
+    "wikidata": "Q2781512",
+    "flood_depth": 3263
   }
 }

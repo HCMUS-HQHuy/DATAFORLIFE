@@ -700,6 +700,7 @@
     "boundary": "administrative",
     "name": "Xã Xuân Thới Sơn",
     "type": "boundary",
-    "wikidata": "Q10835117"
+    "wikidata": "Q10835117",
+    "flood_depth": 0
   }
 }

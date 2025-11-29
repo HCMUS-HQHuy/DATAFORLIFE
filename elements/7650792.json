@@ -2063,6 +2063,7 @@
     "boundary": "administrative",
     "name": "Xã Nhà Bè",
     "type": "boundary",
-    "wikidata": "Q10800788"
+    "wikidata": "Q10800788",
+    "flood_depth": 0
   }
 }

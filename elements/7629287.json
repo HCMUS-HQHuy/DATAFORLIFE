@@ -1169,6 +1169,7 @@
     "boundary": "administrative",
     "name": "Xã Củ Chi",
     "type": "boundary",
-    "wikidata": "Q10830745"
+    "wikidata": "Q10830745",
+    "flood_depth": 0
   }
 }

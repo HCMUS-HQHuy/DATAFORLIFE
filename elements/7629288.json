@@ -1772,6 +1772,7 @@
     "boundary": "administrative",
     "name": "Xã Thái Mỹ",
     "type": "boundary",
-    "wikidata": "Q10825743"
+    "wikidata": "Q10825743",
+    "flood_depth": 0
   }
 }

@@ -1182,6 +1182,7 @@
     "boundary": "administrative",
     "name": "Xã Nhuận Đức",
     "type": "boundary",
-    "wikidata": "Q10800781"
+    "wikidata": "Q10800781",
+    "flood_depth": 0
   }
 }

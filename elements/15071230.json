@@ -14764,6 +14764,7 @@
     "boundary": "administrative",
     "name": "Xã Bắc Tân Uyên",
     "type": "boundary",
-    "wikidata": "Q2379951"
+    "wikidata": "Q2379951",
+    "flood_depth": 0
   }
 }

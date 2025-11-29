@@ -4242,6 +4242,7 @@
     "boundary": "administrative",
     "name": "Xã Thạnh An",
     "type": "boundary",
-    "wikidata": "Q10826236"
+    "wikidata": "Q10826236",
+    "flood_depth": 3.5
   }
 }

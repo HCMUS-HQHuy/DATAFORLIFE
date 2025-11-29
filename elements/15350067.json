@@ -21243,6 +21243,7 @@
     "boundary": "administrative",
     "name": "Xã Phú Giáo",
     "type": "boundary",
-    "wikidata": "Q2517889"
+    "wikidata": "Q2517889",
+    "flood_depth": 0
   }
 }

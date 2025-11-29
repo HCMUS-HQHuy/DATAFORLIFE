@@ -3917,6 +3917,7 @@
     "boundary": "administrative",
     "name": "Xã Hiệp Phước",
     "type": "boundary",
-    "wikidata": "Q10767683"
+    "wikidata": "Q10767683",
+    "flood_depth": 324
   }
 }

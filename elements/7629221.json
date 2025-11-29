@@ -778,6 +778,7 @@
     "boundary": "administrative",
     "name": "Xã Tân An Hội",
     "type": "boundary",
-    "wikidata": "Q10830351"
+    "wikidata": "Q10830351",
+    "flood_depth": 0
   }
 }

@@ -884,6 +884,7 @@
     "boundary": "administrative",
     "name": "Xã Vĩnh Lộc",
     "type": "boundary",
-    "wikidata": "Q10833610"
+    "wikidata": "Q10833610",
+    "flood_depth": 0
   }
 }

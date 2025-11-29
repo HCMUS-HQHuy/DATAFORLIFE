@@ -18334,6 +18334,7 @@
     "boundary": "administrative",
     "name": "Xã Long Hòa",
     "type": "boundary",
-    "wikidata": "Q2072510"
+    "wikidata": "Q2072510",
+    "flood_depth": 0
   }
 }

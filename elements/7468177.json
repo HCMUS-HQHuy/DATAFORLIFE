@@ -3704,6 +3704,7 @@
     "boundary": "administrative",
     "name": "Xã Cần Giờ",
     "type": "boundary",
-    "wikidata": "Q10752329"
+    "wikidata": "Q10752329",
+    "flood_depth": 326
   }
 }

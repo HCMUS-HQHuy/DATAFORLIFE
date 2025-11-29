@@ -1409,6 +1409,7 @@
     "boundary": "administrative",
     "name": "Xã Bà Điểm",
     "type": "boundary",
-    "wikidata": "Q11839545"
+    "wikidata": "Q11839545",
+    "flood_depth": 0
   }
 }

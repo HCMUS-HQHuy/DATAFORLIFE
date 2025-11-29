@@ -22,8 +22,9 @@
   "data_stats": {
     "max_depth_meters": 47.5,
     "flooded_area_pixels": 386716,
-    "flooded_percentage": 5.7561671199069995,
-    "unit": "meters"
+    "flooded_percentage": 21.103860313177716,
+    "unit": "meters",
+    "nodata_value": -9999.0
   },
-  "format": "npy_float32"
+  "format": "geotiff"
 }

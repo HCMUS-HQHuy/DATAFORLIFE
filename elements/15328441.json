@@ -11610,6 +11610,7 @@
     "boundary": "administrative",
     "name": "Xã Thanh An",
     "type": "boundary",
-    "wikidata": "Q2501864"
+    "wikidata": "Q2501864",
+    "flood_depth": 0
   }
 }

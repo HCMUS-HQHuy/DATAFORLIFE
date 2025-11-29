@@ -8821,6 +8821,7 @@
     "boundary": "administrative",
     "name": "Xã Phước Hòa",
     "type": "boundary",
-    "wikidata": "Q2289774"
+    "wikidata": "Q2289774",
+    "flood_depth": 0
   }
 }
