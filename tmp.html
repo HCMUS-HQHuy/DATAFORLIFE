@@ -106,8 +106,7 @@
 
                 }
             );
-
-                const API_URL = "http://localhost:8220/api/admin/get-board";
+                const API_URL = "http://localhost:8220/api/admin/get-board/19260681";
 
     async function loadBorders() {
         try {
@@ -119,7 +118,7 @@
                 return;
             }
 
-            const { borders } = json.data;
+            const { members } = json.data;
 
 
             // Tile nền (bạn có thể đổi nếu muốn)
@@ -128,20 +127,18 @@
             }).addTo(map_10bed936e52a7fccfa3436512dd7ab05);
 
             // Vẽ từng polygon trong borders
-            borders.forEach((relation) => {
-                relation.members.forEach((m) => {
-                    if (m.geometry && m.geometry.length > 1) {
-                        const latlngs = m.geometry.map((p) => [p.lat, p.lon]);
+            members.forEach((m) => {
+                if (m.geometry && m.geometry.length > 1) {
+                    const latlngs = m.geometry.map((p) => [p.lat, p.lon]);
 
-                        L.polyline(latlngs, {
-                            color: "red",
-                            weight: 2
-                        }).addTo(map_10bed936e52a7fccfa3436512dd7ab05);
-                    }
-                });
+                    L.polyline(latlngs, {
+                        color: "red",
+                        weight: 2
+                    }).addTo(map_10bed936e52a7fccfa3436512dd7ab05);
+                }
             });
 
-            console.log("Borders loaded:", borders);
+            console.log("Borders loaded:", members.length);
 
         } catch (err) {
             console.error("Error loading borders:", err);

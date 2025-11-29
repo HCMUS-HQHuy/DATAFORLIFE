@@ -1,0 +1,691 @@
+{
+  "type": "relation",
+  "id": 19260771,
+  "bounds": {
+    "minlat": 10.7584316,
+    "minlon": 106.6561318,
+    "maxlat": 10.7807654,
+    "maxlon": 106.6689245
+  },
+  "members": [
+    {
+      "type": "way",
+      "ref": 1431856300,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7764369,
+          "lon": 106.6636015
+        },
+        {
+          "lat": 10.7781799,
+          "lon": 106.6616987
+        },
+        {
+          "lat": 10.7785908,
+          "lon": 106.6612954
+        },
+        {
+          "lat": 10.7794861,
+          "lon": 106.6603348
+        },
+        {
+          "lat": 10.7807654,
+          "lon": 106.6588798
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856215,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7724931,
+          "lon": 106.6651753
+        },
+        {
+          "lat": 10.7762729,
+          "lon": 106.6636928
+        },
+        {
+          "lat": 10.7764369,
+          "lon": 106.6636015
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856303,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7693685,
+          "lon": 106.6663939
+        },
+        {
+          "lat": 10.7696373,
+          "lon": 106.6662802
+        },
+        {
+          "lat": 10.7724931,
+          "lon": 106.6651753
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856244,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7676977,
+          "lon": 106.6671125
+        },
+        {
+          "lat": 10.7685482,
+          "lon": 106.6667654
+        },
+        {
+          "lat": 10.7693685,
+          "lon": 106.6663939
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418922093,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7669435,
+          "lon": 106.6672867
+        },
+        {
+          "lat": 10.7676977,
+          "lon": 106.6671125
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1436734736,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7656702,
+          "lon": 106.6675809
+        },
+        {
+          "lat": 10.7669435,
+          "lon": 106.6672867
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856207,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7647245,
+          "lon": 106.6677994
+        },
+        {
+          "lat": 10.7656702,
+          "lon": 106.6675809
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856216,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.763782,
+          "lon": 106.6680172
+        },
+        {
+          "lat": 10.7647245,
+          "lon": 106.6677994
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856288,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7618563,
+          "lon": 106.6684621
+        },
+        {
+          "lat": 10.763782,
+          "lon": 106.6680172
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856290,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7608143,
+          "lon": 106.6687029
+        },
+        {
+          "lat": 10.7618563,
+          "lon": 106.6684621
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856292,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.759855,
+          "lon": 106.6689245
+        },
+        {
+          "lat": 10.7608143,
+          "lon": 106.6687029
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418907472,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.759855,
+          "lon": 106.6689245
+        },
+        {
+          "lat": 10.7598659,
+          "lon": 106.6688498
+        },
+        {
+          "lat": 10.7598682,
+          "lon": 106.6687743
+        },
+        {
+          "lat": 10.7598633,
+          "lon": 106.6687096
+        },
+        {
+          "lat": 10.7598521,
+          "lon": 106.6686456
+        },
+        {
+          "lat": 10.7592373,
+          "lon": 106.665585
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418922094,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7592373,
+          "lon": 106.665585
+        },
+        {
+          "lat": 10.7586748,
+          "lon": 106.6627792
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856279,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7586748,
+          "lon": 106.6627792
+        },
+        {
+          "lat": 10.7584316,
+          "lon": 106.661562
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1428895088,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7610771,
+          "lon": 106.6607638
+        },
+        {
+          "lat": 10.7584316,
+          "lon": 106.661562
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418922098,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7620231,
+          "lon": 106.6605006
+        },
+        {
+          "lat": 10.7614575,
+          "lon": 106.660649
+        },
+        {
+          "lat": 10.7610771,
+          "lon": 106.6607638
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856255,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7623613,
+          "lon": 106.6604119
+        },
+        {
+          "lat": 10.7620231,
+          "lon": 106.6605006
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1428895020,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7629381,
+          "lon": 106.6602607
+        },
+        {
+          "lat": 10.7623613,
+          "lon": 106.6604119
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1428895021,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7638426,
+          "lon": 106.6600234
+        },
+        {
+          "lat": 10.7629381,
+          "lon": 106.6602607
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856210,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7667533,
+          "lon": 106.6592065
+        },
+        {
+          "lat": 10.7638426,
+          "lon": 106.6600234
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856209,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7672038,
+          "lon": 106.6590801
+        },
+        {
+          "lat": 10.7667533,
+          "lon": 106.6592065
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1431856235,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7676133,
+          "lon": 106.6589651
+        },
+        {
+          "lat": 10.7672038,
+          "lon": 106.6590801
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1429869482,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7703683,
+          "lon": 106.6581919
+        },
+        {
+          "lat": 10.7676133,
+          "lon": 106.6589651
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1429869479,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7723226,
+          "lon": 106.6576429
+        },
+        {
+          "lat": 10.7718153,
+          "lon": 106.6577858
+        },
+        {
+          "lat": 10.7703683,
+          "lon": 106.6581919
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1429869468,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7736615,
+          "lon": 106.6572658
+        },
+        {
+          "lat": 10.7723226,
+          "lon": 106.6576429
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 1429869473,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7771374,
+          "lon": 106.6562869
+        },
+        {
+          "lat": 10.7736615,
+          "lon": 106.6572658
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418922104,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7777457,
+          "lon": 106.6561318
+        },
+        {
+          "lat": 10.7774856,
+          "lon": 106.6561934
+        },
+        {
+          "lat": 10.7771374,
+          "lon": 106.6562869
+        }
+      ]
+    },
+    {
+      "type": "way",
+      "ref": 418975307,
+      "role": "outer",
+      "geometry": [
+        {
+          "lat": 10.7807654,
+          "lon": 106.6588798
+        },
+        {
+          "lat": 10.7777457,
+          "lon": 106.6561318
+        }
+      ]
+    },
+    {
+      "type": "node",
+      "ref": 13065297034,
+      "role": "label",
+      "lat": 10.766125,
+      "lon": 106.6640402
+    },
+    {
+      "type": "relation",
+      "ref": 19630792,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630791,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630790,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630789,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630788,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630787,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630786,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630785,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630784,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630783,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630782,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630781,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630780,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630779,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630778,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630777,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630776,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630775,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630774,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630773,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630772,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630771,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630770,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630769,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630768,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630767,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630766,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630765,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630764,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630763,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630762,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630761,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630760,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630759,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630758,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630757,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630756,
+      "role": "subarea"
+    },
+    {
+      "type": "relation",
+      "ref": 19630755,
+      "role": "subarea"
+    }
+  ],
+  "tags": {
+    "admin_level": "6",
+    "boundary": "administrative",
+    "name": "Phường Diên Hồng",
+    "population": "75633",
+    "population:date": "2025-07-01",
+    "source:population": "gis.vn",
+    "type": "boundary",
+    "wikidata": "Q4614604"
+  }
+}
