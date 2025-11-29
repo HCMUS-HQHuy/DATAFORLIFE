@@ -30,3 +30,7 @@ Content-Type: application/json
 ### Variables
 @adminUser = admin
 @adminPass = secret
+
+### Admin Get Board
+GET {{host}}{{apiPrefix}}/admin/get-board
+Content-Type: application/json

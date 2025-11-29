@@ -1,0 +1,25 @@
+{
+  "request_id": "sim_req_001",
+  "timestamp": "2023-10-27T12:00:00Z",
+  "bounds": {
+    "north": -28.85018869290051,
+    "south": -29.139881772545678,
+    "east": 153.51035885238107,
+    "west": 153.17892320277826,
+    "center": {
+      "lat": -28.995035232723094,
+      "lon": 153.34464102757966
+    }
+  },
+  "grid": {
+    "width": 1073,
+    "height": 1073,
+    "resolution_meters": 60
+  },
+  "data_stats": {
+    "max_depth_meters": 14.885316848754883,
+    "flooded_area_pixels": 160032,
+    "unit": "meters"
+  },
+  "format": "npy_float32"
+}
