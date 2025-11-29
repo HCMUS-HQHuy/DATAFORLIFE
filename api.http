@@ -1,0 +1,32 @@
+### API Testing for DATAFORLIFE
+
+@host = http://localhost:8220
+@apiPrefix = /api
+
+### Health Check (root)
+GET {{host}}/
+
+### API Root (prefixed)
+GET {{host}}{{apiPrefix}}/
+
+### Auth Login - success
+POST {{host}}{{apiPrefix}}/auth/login
+Content-Type: application/json
+
+{
+	"username": "{{adminUser}}",
+	"password": "{{adminPass}}"
+}
+
+### Auth Login - wrong credentials
+POST {{host}}{{apiPrefix}}/auth/login
+Content-Type: application/json
+
+{
+	"username": "wrong",
+	"password": "nope"
+}
+
+### Variables
+@adminUser = admin
+@adminPass = secret

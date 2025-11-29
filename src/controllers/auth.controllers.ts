@@ -1,70 +1,29 @@
-import express from "express";
+import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
-import util from "src/utils/index.utils";
-import schemas from "src/schemas/index.schema";
-import prisma from "src/models/prismaClient";
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || "admin";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "secret";
+const JWT_SECRET = process.env.JWT_SECRET || "supersecret";
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "1h";
 
-import { LoginForm, UserInfor } from "src/types/index.types";
+function createToken(payload: object) {
+    return (jwt.sign as any)(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+}
 
-async function validateToken(req: express.Request, res: express.Response) {
-    const token = req.cookies["auth_jwt"];
-    if (!token) {
-        return res.status(200).json(util.response.error("No token provided"));
+export default {
+  login: (req: Request, res: Response) => {
+    const { username, password } = req.body || {};
+
+    if (!username || !password) {
+      return res.status(400).json({ message: "username and password are required" });
     }
-    return res.status(200).json(util.response.success("Token is valid"));
-}
 
-async function login(req: express.Request, res: express.Response) {
-    const parsedBody = schemas.form.login.safeParse(req.body);
-    if (!parsedBody.success) {
-        return res.status(200).json(util.response.zodValidationError(parsedBody.error));
+    const isValid = username === ADMIN_USERNAME && password === ADMIN_PASSWORD;
+    if (!isValid) {
+      return res.status(401).json({ message: "invalid credentials" });
     }
-    const credential: LoginForm = parsedBody.data;
-    try {
-        const userInfo = await prisma.users.findFirst({
-            where: {
-                email: credential.email
-            },
-            select: {
-                userId: true,
-                username: true,
-                password: true,
-                role: true
-            }
-        });
-        if (userInfo === null) {
-            return res.status(401).json(util.response.error("Invalid credentials"));
-        }
-        if (!util.password.compare(credential.password, userInfo.password)) {
-            return res.status(401).json(util.response.error("Invalid credentials"));
-        }
-        console.log("User logged in:", userInfo);
-        const user: UserInfor = { userId: userInfo.userId, username: userInfo.username, role: userInfo.role, shop: null };
-        const token = jwt.sign(user, process.env.JWT_SECRET as string, { expiresIn: "1y" }); // 1y = 1 year for testing purposes
-        res.cookie("auth_jwt", token, {
-            path: "/",
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 365 * 24 * 60 * 60 * 1000 // 1 year in milliseconds
-        });
-        return res.status(201).json(util.response.success("Login successful", {userInfor: user}));
-    } catch (error: any) {
-        console.error("Authentication error:", error);
-        return res.status(501).json(util.response.internalServerError());
-    }
-}
 
-function logout(req: express.Request, res: express.Response) {
-    res.clearCookie("auth_jwt");
-    return res.status(200).json(util.response.success("Logout successful"));
-}
-
-const authenController = {
-    validateToken,
-    login,
-    logout
-}
-
-export default authenController;
+    const token = createToken({ username });
+    return res.status(200).json({ message: "login successful", token });
+  },
+};

@@ -1,0 +1,87 @@
+# Node.js .gitignore - generated
+
+# OS
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime files
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Environment / secrets
+.env
+.env.*.local
+.env.local
+.env.test
+.env.production
+.env.development.local
+
+# Node modules and package manager files
+node_modules/
+.pnp/
+.pnp.cjs
+.pnp.js
+.npm/
+.npmrc
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+!.yarn/patches
+.yarnrc.yml
+.yarn-integrity
+.pnpm-store/
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Build output
+dist/
+build/
+out/
+lib/
+public/
+.next/
+.nuxt/
+.storybook/
+.next/
+.vite/
+
+# Caches
+.cache/
+.parcel-cache/
+.eslintcache
+.tmp/
+nyc_output/
+
+# Coverage
+coverage/
+coverage/lcov-report/
+
+# TypeScript
+*.tsbuildinfo
+
+# Editor / IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.code-workspace
+
+# Misc
+.DS_Store
+*.tgz
+*.zip
+*.env.local
+.env.*.local

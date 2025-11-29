@@ -5,8 +5,16 @@ import routes from "./routes/index.routes";
 
 const app: express.Application = express();
 
-const PORT = process.env.PORT || 8220;
+const PORT = Number(process.env.PORT) || 8220;
 
-app.get('/', (res: any, req: any)=> {
-    req.send('hello from hqh');
+// Attach routes with prefix
+routes(app);
+
+// Health check
+app.get('/', (req, res) => {
+    res.send('hello from hqh');
+});
+
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
 });
