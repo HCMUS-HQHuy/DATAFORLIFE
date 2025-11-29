@@ -34,3 +34,14 @@ Content-Type: application/json
 ### Admin Get Board
 GET {{host}}{{apiPrefix}}/admin/get-board/2766949
 Content-Type: application/json
+
+###
+POST {{host}}{{apiPrefix}}/admin/selected-area
+Content-Type: application/json
+
+{
+	"north": 11.0,
+    "south": 10.0,
+    "east": 50.0,
+    "west": 106.35742462311387
+}

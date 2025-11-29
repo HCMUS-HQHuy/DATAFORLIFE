@@ -50,6 +50,46 @@ class AdminService {
         const fileContent = await fs.promises.readFile(filePath, "utf-8");
         return JSON.parse(fileContent);
     }
+
+    async getInfoSelectedArea(area: {
+        north: number;
+        south: number;
+        east: number;
+        west: number;
+    }): Promise<any> {
+
+        const { north, south, east, west } = area;
+
+        const query = `
+    [out:json][timeout:60];
+    // TP Hồ Chí Minh admin_level=4
+    area["boundary"="administrative"]["name"="Thành phố Hồ Chí Minh"]["admin_level"="4"]->.hcm;
+
+    // Tất cả phường/xã admin_level=6 thuộc TP.HCM
+    rel(area.hcm)["boundary"="administrative"]["admin_level"="6"]->.wards;
+
+    // Lọc theo bounding box người dùng chọn
+    rel.wards(${south},${west},${north},${east});
+
+    // Trả về các ID
+    out ids;
+        `;
+
+        const res = await axios.post(
+            "https://overpass-api.de/api/interpreter",
+            `data=${encodeURIComponent(query)}`,
+            {
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+            }
+        );
+
+        return {
+            source: "OSM Overpass",
+            wards: res.data.elements // chứa id của các phường/xã
+        };
+    }
 }
 
 export default new AdminService();
