@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express from "express";
 import cors from "cors";
+import path from "path";
 
 import routes from "./routes/index.route";
 
@@ -13,6 +14,9 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     credentials: true
 }));
+
+// Serve static heatmap images
+app.use('/heatmaps', express.static(path.join(__dirname, '../public/heatmaps')));
 
 routes(app);
 

@@ -1,6 +1,7 @@
 import express from "express";
 import authen from "./auth.route";
 import admin from "./admin.route";
+import floodDepth from "./floodDepth.route";
 
 const router = express.Router();
 
@@ -15,6 +16,7 @@ export default function routes(app: express.Application): void {
 
     router.use("/auth", authen);
     router.use("/admin", admin);
+    router.use("/flood-depth", floodDepth);
 
     app.use(prefixApi, router);
 
