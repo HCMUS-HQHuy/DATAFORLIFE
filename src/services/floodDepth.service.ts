@@ -4,8 +4,24 @@ import { createCanvas } from 'canvas';
 import * as geotiff from 'geotiff';
 import chroma from 'chroma-js';
 
-// Đường dẫn đến file GeoTIFF flood depths
+// Đường dẫn đến thư mục heatmaps
+const HEATMAPS_DIR = path.join(process.cwd(), 'public', 'heatmaps');
+
+// Đường dẫn đến file GeoTIFF flood depths (fallback)
 const FLOOD_DEPTHS_PATH = path.join(process.cwd(), 'AIResponse', 'flood_depths.tif');
+
+// Time frame mapping: API parameter -> file suffix
+// Frontend sends: 'now', 'future-5', 'future-30', 'future-60'
+const TIME_FRAME_MAP: Record<string, string> = {
+    'now': '0min',
+    'future-5': '5min',
+    'future-30': '30min',
+    'future-60': '60min',
+    // Legacy support
+    '5min': '5min',
+    '30min': '30min',
+    '60min': '60min'
+};
 
 interface Bounds {
     north: number;
@@ -118,12 +134,12 @@ class FloodDepthService {
                 typeof bbox[2] === 'number' && typeof bbox[3] === 'number') {
                 // Kiểm tra xem có phải projected coordinates không
                 if (Math.abs(bbox[0]) > 180 || Math.abs(bbox[1]) > 90 || Math.abs(bbox[2]) > 180 || Math.abs(bbox[3]) > 90) {
-                    // Sử dụng bounds mặc định cho khu vực TPHCM - Việt Nam
+                    // Sử dụng bounds mặc định cho khu vực TPHCM - Việt Nam (từ HoChiMinh_DEM.tfw)
                     bounds = {
-                        north: 11.2,
-                        south: 10.3,
-                        east: 107.1,
-                        west: 106.3
+                        north: 11.16,
+                        south: 10.97,
+                        east: 106.54,
+                        west: 106.36
                     };
                 } else {
                     bounds = {
@@ -134,12 +150,12 @@ class FloodDepthService {
                     };
                 }
             } else {
-                // Fallback cho khu vực TPHCM
+                // Fallback cho khu vực TPHCM (từ HoChiMinh_DEM.tfw)
                 bounds = {
-                    north: 11.2,
-                    south: 10.3,
-                    east: 107.1,
-                    west: 106.3
+                    north: 11.16,
+                    south: 10.97,
+                    east: 106.54,
+                    west: 106.36
                 };
             }
 
@@ -258,10 +274,76 @@ class FloodDepthService {
     }
 
     /**
-     * Lấy depth map mới nhất từ file flood_depths.tif
+     * Lấy depth map theo time frame
+     * @param timeFrame - 'now' | '5min' | '30min' | '60min'
      */
-    public async getFloodDepthMap(): Promise<FloodDepthResult> {
+    public async getFloodDepthMap(timeFrame: string = 'now'): Promise<FloodDepthResult> {
         try {
+            // Map time frame to file suffix
+            const fileSuffix = TIME_FRAME_MAP[timeFrame] || '0min';
+            const today = new Date().toISOString().split('T')[0];
+            
+            // Try to find pre-generated PNG file first
+            const pngFilename = `flood_depthmap_${today}-${fileSuffix}.png`;
+            const pngPath = path.join(HEATMAPS_DIR, pngFilename);
+            
+            console.log(`Looking for heatmap: ${pngPath}`);
+            
+            // Check if PNG file exists
+            if (fs.existsSync(pngPath)) {
+                console.log(`Found pre-generated PNG: ${pngFilename}`);
+                
+                // Read corresponding TIF file for metadata (if exists)
+                const tifFilename = `flood_depthmap_${today}-${fileSuffix}.tif`;
+                const tifPath = path.join(HEATMAPS_DIR, tifFilename);
+                
+                let minDepth = 0;
+                let maxDepth = 5;
+                
+                // Try to get min/max from TIF file metadata
+                if (fs.existsSync(tifPath)) {
+                    try {
+                        const stats = await this.getTifStats(tifPath);
+                        minDepth = stats.min;
+                        maxDepth = stats.max;
+                    } catch (e) {
+                        console.log('Could not read TIF stats, using defaults');
+                    }
+                }
+                
+                // Generate legend values
+                const legendValues = [
+                    minDepth,
+                    minDepth + (maxDepth - minDepth) * 0.25,
+                    minDepth + (maxDepth - minDepth) * 0.5,
+                    minDepth + (maxDepth - minDepth) * 0.75,
+                    maxDepth
+                ];
+                
+                return {
+                    success: true,
+                    data: {
+                        image_url: `/heatmaps/${pngFilename}`,
+                        bounds: {
+                            north: 11.16,
+                            south: 10.97,
+                            east: 106.54,
+                            west: 106.36
+                        },
+                        timestamp: new Date().toISOString(),
+                        max_depth: maxDepth,
+                        min_depth: minDepth,
+                        legend: {
+                            colors: ['#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000'],
+                            values: legendValues
+                        }
+                    }
+                };
+            }
+            
+            // Fallback: generate from original TIF file
+            console.log(`PNG not found, falling back to generate from TIF...`);
+            
             // Load dữ liệu nếu chưa có cache
             this.cachedData ??= await this.readFloodDepthData();
             const floodData = this.cachedData;
@@ -305,6 +387,37 @@ class FloodDepthService {
                 error: error.message || 'Failed to generate flood depth map'
             };
         }
+    }
+    
+    /**
+     * Get min/max stats from a TIF file
+     */
+    private async getTifStats(tifPath: string): Promise<{ min: number; max: number }> {
+        const arrayBuffer = fs.readFileSync(tifPath).buffer;
+        const tiff = await geotiff.fromArrayBuffer(arrayBuffer);
+        const image = await tiff.getImage();
+        const rasterData = await image.readRasters();
+        const data = new Float32Array(rasterData[0] as ArrayLike<number>);
+        const noDataValue = image.getGDALNoData();
+        
+        let min = Infinity;
+        let max = -Infinity;
+        
+        for (let i = 0; i < data.length; i++) {
+            const value = data[i];
+            if (value === undefined || value === null) continue;
+            if (noDataValue !== null && noDataValue !== undefined && Math.abs(value - noDataValue) < 0.0001) continue;
+            if (!Number.isFinite(value) || Number.isNaN(value)) continue;
+            if (value === 0) continue;
+            
+            min = Math.min(min, value);
+            max = Math.max(max, value);
+        }
+        
+        return {
+            min: min === Infinity ? 0 : min,
+            max: max === -Infinity ? 5 : max
+        };
     }
 
     /**
