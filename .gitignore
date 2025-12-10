@@ -21,7 +21,7 @@ pids/
 *.pid.lock
 
 # Environment / secrets
-.env
+# .env
 .env.*.local
 .env.local
 .env.test
