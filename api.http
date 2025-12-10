@@ -5,7 +5,7 @@
 @host = http://localhost:8220
 @apiPrefix = /api
 
-@token = login-success.response.body.token
+@token = {{loginsuccess.response.body.token}}
 
 ### Health Check (root)
 GET {{host}}/
@@ -14,7 +14,7 @@ GET {{host}}/
 GET {{host}}{{apiPrefix}}/
 
 ### Auth Login - success
-# @name login-success
+# @name loginsuccess
 POST {{host}}{{apiPrefix}}/auth/login
 Content-Type: application/json
 
@@ -26,6 +26,7 @@ Content-Type: application/json
 ### Admin Get Board
 GET {{host}}{{apiPrefix}}/admin/get-board/19325226
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 ###
 POST {{host}}{{apiPrefix}}/admin/selected-area
