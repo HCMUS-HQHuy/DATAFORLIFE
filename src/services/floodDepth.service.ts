@@ -3,7 +3,6 @@ import path from 'node:path';
 import { createCanvas } from 'canvas';
 import * as geotiff from 'geotiff';
 import chroma from 'chroma-js';
-import { getHoChiMinhBounds, GeoBounds } from '../utils/geoUtils';
 
 // Đường dẫn đến thư mục heatmaps
 const HEATMAPS_DIR = path.join(process.cwd(), 'public', 'heatmaps');
@@ -135,8 +134,13 @@ class FloodDepthService {
                 typeof bbox[2] === 'number' && typeof bbox[3] === 'number') {
                 // Kiểm tra xem có phải projected coordinates không
                 if (Math.abs(bbox[0]) > 180 || Math.abs(bbox[1]) > 90 || Math.abs(bbox[2]) > 180 || Math.abs(bbox[3]) > 90) {
-                    // Sử dụng bounds được tính từ HoChiMinh_DEM.tfw
-                    bounds = getHoChiMinhBounds();
+                    // Sử dụng bounds mặc định cho khu vực TPHCM - Việt Nam
+                    bounds = {
+                        north: 11.2,
+                        south: 10.3,
+                        east: 107.1,
+                        west: 106.3
+                    };
                 } else {
                     bounds = {
                         north: bbox[3],
@@ -146,8 +150,13 @@ class FloodDepthService {
                     };
                 }
             } else {
-                // Fallback: tính bounds từ HoChiMinh_DEM.tfw
-                bounds = getHoChiMinhBounds();
+                // Fallback cho khu vực TPHCM
+                bounds = {
+                    north: 11.2,
+                    south: 10.3,
+                    east: 107.1,
+                    west: 106.3
+                };
             }
 
             return {
@@ -311,14 +320,16 @@ class FloodDepthService {
                     maxDepth
                 ];
                 
-                // Get exact bounds from TFW file
-                const exactBounds = getHoChiMinhBounds();
-                
                 return {
                     success: true,
                     data: {
                         image_url: `/heatmaps/${pngFilename}`,
-                        bounds: exactBounds,
+                        bounds: {
+                            north: 11.2,
+                            south: 10.3,
+                            east: 107.1,
+                            west: 106.3
+                        },
                         timestamp: new Date().toISOString(),
                         max_depth: maxDepth,
                         min_depth: minDepth,
