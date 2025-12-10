@@ -63,10 +63,10 @@ class AdminService {
         const query = `
     [out:json][timeout:60];
     // TP Hồ Chí Minh admin_level=4
-    area["boundary"="administrative"]["name"="Thành phố Hồ Chí Minh"]["admin_level"="4"]->.hcm;
+    area["boundary"="administrative"]["name"="Thành phố Huế"]["admin_level"="4"]->.hue;
 
     // Tất cả phường/xã admin_level=6 thuộc TP.HCM
-    rel(area.hcm)["boundary"="administrative"]["admin_level"="6"]->.wards;
+    rel(area.hue)["boundary"="administrative"]["admin_level"="6"]->.wards;
 
     // Lọc theo bounding box người dùng chọn
     rel.wards(${south},${west},${north},${east});

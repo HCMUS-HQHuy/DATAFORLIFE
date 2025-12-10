@@ -24,7 +24,7 @@ Content-Type: application/json
 }
 
 ### Admin Get Board
-GET {{host}}{{apiPrefix}}/admin/get-board/2766949
+GET {{host}}{{apiPrefix}}/admin/get-board/19325226
 Content-Type: application/json
 
 ###

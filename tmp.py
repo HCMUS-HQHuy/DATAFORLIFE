@@ -2,7 +2,7 @@ import json
 import os
 
 # Đường dẫn file JSON Overpass
-input_file = "hcm_admin.json"  # file bạn đã tải xuống từ Overpass
+input_file = "hue.json"  # file bạn đã tải xuống từ Overpass
 
 # Thư mục lưu các file riêng
 output_dir = "elements"
