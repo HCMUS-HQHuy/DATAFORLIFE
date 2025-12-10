@@ -51,6 +51,18 @@ class AdminService {
         return JSON.parse(fileContent);
     }
 
+    getFloodDepthStatus(): any {
+        const filePath = path.join(this.elementsDir, 'floodDepthStatus.json');
+
+        if (!fs.existsSync(filePath)) {
+            console.log(`File floodDepthStatus.json không tồn tại`);
+            return null;
+        }
+
+        const fileContent = fs.readFileSync(filePath, "utf-8");
+        return JSON.parse(fileContent);
+    }
+
     async getInfoSelectedArea(area: {
         north: number;
         south: number;

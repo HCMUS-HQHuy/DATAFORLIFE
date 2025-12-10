@@ -75,35 +75,35 @@ function latLonToPixel(
 
 // Ví dụ về metadata và polygons
 const metadata: Metadata = {
-  "request_id": "sim_hcm_001",
-  "timestamp": "2025-11-29T10:00:00Z",
-  "location": "Ho Chi Minh City",
+  "request_id": "sim_hue_001",
+  "timestamp": "2025-12-11T00:47:50Z",
+  "location": "Hue City",
   "simulation_type": "static_inundation",
-  "water_level_param": 1.5,
+  "water_level_param": 2.0,
   "bounds": {
-    "north": 12.159871119602483,
-    "south": 10.375438568758025,
-    "east": 107.02445924184507,
-    "west": 106.35742462311387,
+    "north": 16.74602801912226,
+    "south": 15.987548023342475,
+    "east": 108.19093975546386,
+    "west": 107.01986856019406,
     "center": {
-      "lat": 10.767654844180253,
-      "lon": 106.69094193247946
+      "lat": 16.366788021232367,
+      "lon": 107.60540415782896
     }
   },
   "grid": {
-    "width": 2390,
-    "height": 2811,
+    "width": 4109,
+    "height": 2681,
     "resolution_meters": 30.7250757233
   },
   "data_stats": {
-    "max_depth_meters": 47.5,
-    "flooded_area_pixels": 386716,
-    "flooded_percentage": 21.103860313177716,
+    "max_depth_meters": 1.0,
+    "flooded_area_pixels": 45093,
+    "flooded_percentage": 0.8945653562589223,
     "unit": "meters",
     "nodata_value": -9999.0
   },
   "format": "geotiff"
-};
+}
 
 async function process(matrix: number[][], width: number, height: number) {
     try {
@@ -185,24 +185,19 @@ async function process(matrix: number[][], width: number, height: number) {
 
 async function updateFilesWithFloodDepth(ans: { id: number, depth: number }[]) {
     try {
-        for (const a of ans) {
-            const id: string = a.id.toString();
-            const depth = a.depth;
+        const floodDepthStatusFilePath = path.join(elementsDir, 'floodDepthStatus.json');
 
-            const filePath = path.join(elementsDir, `${id}.json`);
-            if (!fs.existsSync(filePath)) {
-                console.log(`File cho phường/xã ID ${id} không tồn tại: ${filePath}`);
-                continue;
-            }
-            const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-            data.tags = {
-                ...data.tags,  // Giữ lại các thuộc tính hiện tại trong tags
-                flood_depth: depth  // Thêm giá trị độ sâu lũ
-            };
-            fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
-            console.log(`Cập nhật flood_depth cho phường/xã với ID ${id} vào file: ${filePath}`);
+        // Kiểm tra nếu tệp 'floodDepthStatus.json' đã tồn tại
+        if (fs.existsSync(floodDepthStatusFilePath)) {
+            console.log(`File ${floodDepthStatusFilePath} đã tồn tại. Đang cập nhật...`);
+        } else {
+            console.log(`Tạo mới file ${floodDepthStatusFilePath}...`);
         }
-        console.log("Cập nhật tất cả các file xong.");
+
+        // Ghi mảng ans vào file floodDepthStatus.json
+        fs.writeFileSync(floodDepthStatusFilePath, JSON.stringify(ans, null, 2), 'utf-8');
+
+        console.log("Cập nhật thành công vào file floodDepthStatus.json.");
     } catch (error) {
         console.error("Có lỗi khi cập nhật file:", error);
     }

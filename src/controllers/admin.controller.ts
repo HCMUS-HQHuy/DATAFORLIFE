@@ -53,5 +53,19 @@ export default {
                 error: err.message,
             });
         }
+    },
+    getFloodDepthStatus: async (req: Request, res: Response) => {
+        try {
+            const data = await adminService.getFloodDepthStatus();
+            res.status(200).json({
+                success: true,
+                data,
+            });
+        } catch (err: any) {
+            res.status(500).json({
+                success: false,
+                error: err.message,
+            });
+        }
     }
 };

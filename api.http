@@ -37,3 +37,7 @@ Content-Type: application/json
     "east": 107.02445924184507,
     "west": 106.35742462311387
 }
+
+### 
+GET {{host}}{{apiPrefix}}/admin/flood-depth-status
+Content-Type: application/json

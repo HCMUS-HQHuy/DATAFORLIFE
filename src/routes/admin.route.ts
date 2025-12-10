@@ -6,5 +6,5 @@ const router = express.Router();
 // GET /admin/get-board → gọi API opensource
 router.get("/get-board/:id", adminController.getBoard);
 router.post("/selected-area", adminController.getInfoSelectedArea);
-
+router.get("/flood-depth-status", adminController.getFloodDepthStatus);
 export default router;
