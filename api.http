@@ -1,7 +1,11 @@
 ### API Testing for DATAFORLIFE
-
+### Variables
+@adminUser = admin
+@adminPass = secret
 @host = http://localhost:8220
 @apiPrefix = /api
+
+@token = login-success.response.body.token
 
 ### Health Check (root)
 GET {{host}}/
@@ -10,6 +14,7 @@ GET {{host}}/
 GET {{host}}{{apiPrefix}}/
 
 ### Auth Login - success
+# @name login-success
 POST {{host}}{{apiPrefix}}/auth/login
 Content-Type: application/json
 
@@ -17,19 +22,6 @@ Content-Type: application/json
 	"username": "{{adminUser}}",
 	"password": "{{adminPass}}"
 }
-
-### Auth Login - wrong credentials
-POST {{host}}{{apiPrefix}}/auth/login
-Content-Type: application/json
-
-{
-	"username": "wrong",
-	"password": "nope"
-}
-
-### Variables
-@adminUser = admin
-@adminPass = secret
 
 ### Admin Get Board
 GET {{host}}{{apiPrefix}}/admin/get-board/2766949
