@@ -5,13 +5,17 @@ class FloodDepthController {
     
     /**
      * GET /api/flood-depth/map
-     * Lấy flood depth map mới nhất
+     * Lấy flood depth map theo thời gian
+     * Query params:
+     *   - time: 'now' | '5min' | '30min' | '60min' (default: 'now')
      */
     public async getFloodDepthMap(req: Request, res: Response): Promise<void> {
         try {
-            console.log('Getting flood depth map...');
+            // Get time parameter from query string (e.g., ?time=5min)
+            const timeParam = (req.query.time as string) || 'now';
+            console.log(`Getting flood depth map for time: ${timeParam}`);
             
-            const result = await floodDepthService.getFloodDepthMap();
+            const result = await floodDepthService.getFloodDepthMap(timeParam);
             
             if (result.success) {
                 res.status(200).json(result);
