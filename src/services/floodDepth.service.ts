@@ -4,23 +4,27 @@ import { createCanvas } from 'canvas';
 import * as geotiff from 'geotiff';
 import chroma from 'chroma-js';
 
-// Đường dẫn đến thư mục heatmaps
+// Đường dẫn đến thư mục heatmaps (output PNG)
 const HEATMAPS_DIR = path.join(process.cwd(), 'public', 'heatmaps');
+
+// Đường dẫn đến thư mục chứa các file TIF theo thời gian
+const TIF_SOURCE_DIR = path.join(process.cwd(), 'AIResponse');
+
+// Đường dẫn đến file metadata
+const METADATA_PATH = path.join(process.cwd(), 'AIResponse', 'metadata.json');
 
 // Đường dẫn đến file GeoTIFF flood depths (fallback)
 const FLOOD_DEPTHS_PATH = path.join(process.cwd(), 'AIResponse', 'flood_depths.tif');
 
-// Time frame mapping: API parameter -> file suffix
-// Frontend sends: 'now', 'future-5', 'future-30', 'future-60'
+// Time frame mapping: API parameter -> actual TIF filename
+// Frontend sends: 'now', 'future-5', 'future-30'
 const TIME_FRAME_MAP: Record<string, string> = {
-    'now': '0min',
-    'future-5': '5min',
-    'future-30': '30min',
-    'future-60': '60min',
+    'now': 'inundation_20251211_100500',      // 10:05:00
+    'future-5': 'inundation_20251211_101000',  // 10:10:00 (5 phút sau)
+    'future-30': 'inundation_20251211_101500', // 10:15:00 (10 phút sau)
     // Legacy support
-    '5min': '5min',
-    '30min': '30min',
-    '60min': '60min'
+    'past-5': 'inundation_20251211_100500',
+    'future-60': 'inundation_20251211_101500'
 };
 
 interface Bounds {
@@ -60,25 +64,59 @@ class FloodDepthService {
     private cachedData: FloodDepthData | null = null;
 
     /**
-     * Đọc và parse dữ liệu GeoTIFF từ flood_depths.tif
+     * Đọc bounds từ metadata.json
      */
-    private async readFloodDepthData(): Promise<FloodDepthData> {
+    private getMetadataBounds(): Bounds | null {
         try {
-            console.log('Reading flood depths file:', FLOOD_DEPTHS_PATH);
+            if (!fs.existsSync(METADATA_PATH)) {
+                console.warn('Metadata file not found:', METADATA_PATH);
+                return null;
+            }
+            const metadata = JSON.parse(fs.readFileSync(METADATA_PATH, 'utf-8'));
+            if (metadata.bounds) {
+                return {
+                    north: metadata.bounds.north,
+                    south: metadata.bounds.south,
+                    east: metadata.bounds.east,
+                    west: metadata.bounds.west
+                };
+            }
+        } catch (error) {
+            console.warn('Error reading metadata bounds:', error);
+        }
+        return null;
+    }
+
+    /**
+     * Đọc và parse dữ liệu GeoTIFF từ file TIF
+     * @param tifPath - Đường dẫn đến file TIF cần đọc
+     */
+    private async readFloodDepthData(tifPath: string = FLOOD_DEPTHS_PATH): Promise<FloodDepthData> {
+        try {
+            console.log('Reading flood depths file:', tifPath);
             
-            if (!fs.existsSync(FLOOD_DEPTHS_PATH)) {
-                throw new Error(`Flood depths file not found: ${FLOOD_DEPTHS_PATH}`);
+            if (!fs.existsSync(tifPath)) {
+                throw new Error(`Flood depths file not found: ${tifPath}`);
             }
 
             // Đọc file GeoTIFF
-            const arrayBuffer = fs.readFileSync(FLOOD_DEPTHS_PATH).buffer;
+            const arrayBuffer = fs.readFileSync(tifPath).buffer;
             const tiff = await geotiff.fromArrayBuffer(arrayBuffer);
             const image = await tiff.getImage();
             
             // Lấy thông tin metadata
             const width = image.getWidth();
             const height = image.getHeight();
-            const bbox = image.getBoundingBox();
+            let bbox: number[] | null = null;
+
+            // Một số file GeoTIFF không có affine transform → getBoundingBox ném lỗi.
+            // Khi đó, dùng fallback bounds từ metadata hoặc cấu hình mặc định.
+            try {
+                bbox = image.getBoundingBox();
+            } catch (e) {
+                console.warn('⚠️ GeoTIFF missing affine transform, using fallback bounds');
+                bbox = null;
+            }
             
             console.log('Flood Depths GeoTIFF Info:', {
                 width,
@@ -127,37 +165,19 @@ class FloodDepthService {
             console.log(`Valid pixels: ${validPixels}/${data.length}`);
             console.log(`Flood depth range: ${min} to ${max}`);
 
-            // Chuyển đổi bounds về lat/lng nếu cần
-            let bounds: Bounds;
-            if (bbox && bbox.length === 4 && 
-                typeof bbox[0] === 'number' && typeof bbox[1] === 'number' && 
-                typeof bbox[2] === 'number' && typeof bbox[3] === 'number') {
-                // Kiểm tra xem có phải projected coordinates không
-                if (Math.abs(bbox[0]) > 180 || Math.abs(bbox[1]) > 90 || Math.abs(bbox[2]) > 180 || Math.abs(bbox[3]) > 90) {
-                    // Sử dụng bounds mặc định cho khu vực TPHCM - Việt Nam
-                    bounds = {
-                        north: 11.2,
-                        south: 10.3,
-                        east: 107.1,
-                        west: 106.3
-                    };
-                } else {
-                    bounds = {
-                        north: bbox[3],
-                        south: bbox[1], 
-                        east: bbox[2],
-                        west: bbox[0]
-                    };
-                }
-            } else {
-                // Fallback cho khu vực TPHCM
+            // Lấy bounds từ metadata.json, nếu không có thì dùng fallback
+            let bounds = this.getMetadataBounds();
+            if (!bounds) {
+                console.warn('⚠️ No metadata bounds found, using fallback (TP.HCM)');
                 bounds = {
-                    north: 11.2,
-                    south: 10.3,
-                    east: 107.1,
-                    west: 106.3
+                    north: 11.159871119602483,
+                    south: 10.375438568758025,
+                    east: 107.02445924184507,
+                    west: 106.35742462311387
                 };
             }
+
+            console.log('📍 Using bounds:', bounds);
 
             return {
                 width,
@@ -177,11 +197,13 @@ class FloodDepthService {
 
     /**
      * Tạo ảnh depth map từ dữ liệu flood depths và lưu vào file
+     * @param floodData - Dữ liệu flood depth
+     * @param outputFilename - Tên file output (không có đuôi .png)
      */
-    private async createFloodDepthImage(floodData: FloodDepthData): Promise<string> {
+    private async createFloodDepthImage(floodData: FloodDepthData, outputFilename: string): Promise<string> {
         const { width, height, data, noDataValue, min, max } = floodData;
         
-        console.log('Generating flood depth map image...');
+        console.log('Generating flood depth map image:', outputFilename);
         console.log('Image dimensions:', width, 'x', height);
         console.log('Depth range:', min, 'to', max);
         
@@ -254,18 +276,16 @@ class FloodDepthService {
         // Vẽ lên canvas
         ctx.putImageData(imageData, 0, 0);
         
-        // Tạo tên file với timestamp
-        const timestamp = new Date().toISOString().split('T')[0];
-        const filename = `flood_depthmap_${timestamp}.png`;
+        // Sử dụng tên file được truyền vào
+        const filename = `${outputFilename}.png`;
         
         // Đảm bảo thư mục heatmaps tồn tại
-        const heatmapsDir = path.join(process.cwd(), 'public', 'heatmaps');
-        if (!fs.existsSync(heatmapsDir)) {
-            fs.mkdirSync(heatmapsDir, { recursive: true });
+        if (!fs.existsSync(HEATMAPS_DIR)) {
+            fs.mkdirSync(HEATMAPS_DIR, { recursive: true });
         }
         
         // Lưu file
-        const filePath = path.join(heatmapsDir, filename);
+        const filePath = path.join(HEATMAPS_DIR, filename);
         const buffer = canvas.toBuffer('image/png');
         fs.writeFileSync(filePath, buffer);
         
@@ -275,39 +295,51 @@ class FloodDepthService {
 
     /**
      * Lấy depth map theo time frame
-     * @param timeFrame - 'now' | '5min' | '30min' | '60min'
+     * @param timeFrame - 'now' | 'future-5' | 'future-30'
      */
     public async getFloodDepthMap(timeFrame: string = 'now'): Promise<FloodDepthResult> {
         try {
-            // Map time frame to file suffix
-            const fileSuffix = TIME_FRAME_MAP[timeFrame] || '0min';
-            const today = new Date().toISOString().split('T')[0];
+            // Map time frame to actual TIF filename
+            const tifBasename = TIME_FRAME_MAP[timeFrame] || 'inundation_20251211_100500';
+            const tifPath = path.join(TIF_SOURCE_DIR, `${tifBasename}.tif`);
             
-            // Try to find pre-generated PNG file first
-            const pngFilename = `flood_depthmap_${today}-${fileSuffix}.png`;
-            const pngPath = path.join(HEATMAPS_DIR, pngFilename);
+            console.log(`🔍 Looking for TIF file: ${tifPath}`);
             
-            console.log(`Looking for heatmap: ${pngPath}`);
+            // Check if source TIF exists
+            if (!fs.existsSync(tifPath)) {
+                throw new Error(`Source TIF file not found: ${tifPath}`);
+            }
             
-            // Check if PNG file exists
+            // PNG output filename
+            const pngFilename = `${tifBasename}`;
+            const pngPath = path.join(HEATMAPS_DIR, `${pngFilename}.png`);
+            
+            console.log(`🖼️ PNG output: ${pngPath}`);
+            
+            // Check if PNG already exists
             if (fs.existsSync(pngPath)) {
-                console.log(`Found pre-generated PNG: ${pngFilename}`);
+                console.log(`✅ Found existing PNG: ${pngFilename}.png`);
                 
-                // Read corresponding TIF file for metadata (if exists)
-                const tifFilename = `flood_depthmap_${today}-${fileSuffix}.tif`;
-                const tifPath = path.join(HEATMAPS_DIR, tifFilename);
-                
+                // Read TIF file for metadata (bounds, min/max)
                 let minDepth = 0;
                 let maxDepth = 5;
+                let bounds: Bounds = this.getMetadataBounds() || {
+                    north: 16.5,
+                    south: 16.4,
+                    east: 107.65,
+                    west: 107.55
+                };
                 
-                // Try to get min/max from TIF file metadata
+                // Try to get min/max from TIF file
                 if (fs.existsSync(tifPath)) {
                     try {
-                        const stats = await this.getTifStats(tifPath);
-                        minDepth = stats.min;
-                        maxDepth = stats.max;
+                        const tifData = await this.readFloodDepthData(tifPath);
+                        minDepth = tifData.min;
+                        maxDepth = tifData.max;
+                        // Bounds từ metadata, không từ TIF
+                        console.log(`📊 TIF Stats - Min: ${minDepth}, Max: ${maxDepth}`);
                     } catch (e) {
-                        console.log('Could not read TIF stats, using defaults');
+                        console.warn('Could not read TIF metadata, using defaults:', e);
                     }
                 }
                 
@@ -323,33 +355,29 @@ class FloodDepthService {
                 return {
                     success: true,
                     data: {
-                        image_url: `/heatmaps/${pngFilename}`,
-                        bounds: {
-                            north: 11.2,
-                            south: 10.3,
-                            east: 107.1,
-                            west: 106.3
-                        },
+                        image_url: `/heatmaps/${pngFilename}.png`,
+                        bounds: bounds,
                         timestamp: new Date().toISOString(),
                         max_depth: maxDepth,
                         min_depth: minDepth,
                         legend: {
                             colors: ['#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000'],
                             values: legendValues
-                        }
+                        },
+                        timeFrame: timeFrame,
+                        sourceTif: tifBasename
                     }
                 };
             }
             
-            // Fallback: generate from original TIF file
-            console.log(`PNG not found, falling back to generate from TIF...`);
+            // Generate PNG from TIF
+            console.log(`🎨 Generating PNG from TIF: ${tifBasename}`);
             
-            // Load dữ liệu nếu chưa có cache
-            this.cachedData ??= await this.readFloodDepthData();
-            const floodData = this.cachedData;
+            // Load dữ liệu từ TIF file cụ thể
+            const floodData = await this.readFloodDepthData(tifPath);
             
-            // Tạo ảnh depth map
-            const imageUrl = await this.createFloodDepthImage(floodData);
+            // Tạo ảnh depth map với tên file cụ thể
+            const imageUrl = await this.createFloodDepthImage(floodData, pngFilename);
             
             // Tạo legend values (5 mức)
             const legendValues = [
@@ -360,23 +388,22 @@ class FloodDepthService {
                 floodData.max
             ];
 
+            console.log(`✅ PNG generated successfully: ${imageUrl}`);
+            
             return {
                 success: true,
                 data: {
                     image_url: imageUrl,
-                    bounds: {
-                        north: floodData.bounds.north,
-                        south: floodData.bounds.south,
-                        east: floodData.bounds.east,
-                        west: floodData.bounds.west
-                    },
+                    bounds: floodData.bounds,
                     timestamp: new Date().toISOString(),
                     max_depth: floodData.max,
                     min_depth: floodData.min,
                     legend: {
                         colors: ['#0000FF', '#00FFFF', '#00FF00', '#FFFF00', '#FF0000'],
                         values: legendValues
-                    }
+                    },
+                    timeFrame: timeFrame,
+                    sourceTif: tifBasename
                 }
             };
 
@@ -422,11 +449,20 @@ class FloodDepthService {
 
     /**
      * Tính độ ngập trung bình cho một vùng được chọn
+     * @param bounds - Vùng cần phân tích
+     * @param timeFrame - Time frame để chọn file TIF (optional)
      */
-    public async getRegionFloodDepth(bounds: Bounds): Promise<any> {
+    public async getRegionFloodDepth(bounds: Bounds, timeFrame: string = 'now'): Promise<any> {
         try {
-            this.cachedData ??= await this.readFloodDepthData();
-            const { data, bounds: tifBounds, width, height, noDataValue } = this.cachedData;
+            // Load dữ liệu từ TIF file theo timeFrame
+            const tifBasename = TIME_FRAME_MAP[timeFrame] || 'inundation_20251211_100500';
+            const tifPath = path.join(TIF_SOURCE_DIR, `${tifBasename}.tif`);
+            
+            const floodData = fs.existsSync(tifPath) 
+                ? await this.readFloodDepthData(tifPath)
+                : await this.readFloodDepthData(FLOOD_DEPTHS_PATH);
+                
+            const { data, bounds: tifBounds, width, height, noDataValue } = floodData;
 
             // Convert lat/lng bounds to pixel coordinates
             const latRange = tifBounds.north - tifBounds.south;
@@ -536,11 +572,19 @@ class FloodDepthService {
 
     /**
      * Lấy dữ liệu thống kê về flood depths
+     * @param timeFrame - Time frame để lấy stats (optional)
      */
-    public async getFloodDepthStats(): Promise<any> {
+    public async getFloodDepthStats(timeFrame: string = 'now'): Promise<any> {
         try {
-            this.cachedData ??= await this.readFloodDepthData();
-            const { data, noDataValue, min, max, width, height } = this.cachedData;
+            // Load dữ liệu từ TIF file theo timeFrame
+            const tifBasename = TIME_FRAME_MAP[timeFrame] || 'inundation_20251211_100500';
+            const tifPath = path.join(TIF_SOURCE_DIR, `${tifBasename}.tif`);
+            
+            const floodData = fs.existsSync(tifPath) 
+                ? await this.readFloodDepthData(tifPath)
+                : await this.readFloodDepthData(FLOOD_DEPTHS_PATH);
+                
+            const { data, noDataValue, min, max, width, height } = floodData;
 
             // Thu thập các giá trị hợp lệ
             const validValues: number[] = [];
