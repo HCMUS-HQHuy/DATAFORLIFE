@@ -5,9 +5,9 @@
   "simulation_type": "static_inundation",
   "water_level_param": 2.0,
   "bounds": {
-    "north": 16.74182801912226,
+    "north": 16.74602801912226,
     "south": 15.987548023342475,
-    "east": 108.19793975546386,
+    "east": 108.19093975546386,
     "west": 107.01986856019406,
     "center": {
       "lat": 16.366788021232367,

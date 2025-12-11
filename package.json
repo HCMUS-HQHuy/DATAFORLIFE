@@ -32,6 +32,7 @@
     "express": "^5.1.0",
     "geotiff": "^2.1.4-beta.1",
     "jsonwebtoken": "^9.0.2",
+    "node-cron": "^4.2.1",
     "proj4": "^2.20.2"
   }
 }

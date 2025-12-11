@@ -4,6 +4,7 @@ import cors from "cors";
 import path from "path";
 
 import routes from "./routes/index.route";
+import {startScheduler} from "./services/ai.service";  
 
 const app: express.Application = express();
 
@@ -19,6 +20,7 @@ app.use(cors({
 app.use('/heatmaps', express.static(path.join(__dirname, '../public/heatmaps')));
 
 routes(app);
+startScheduler();
 
 app.get('/', (req, res) => {
     res.send('hello from hqh');

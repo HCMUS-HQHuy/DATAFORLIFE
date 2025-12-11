@@ -2,10 +2,12 @@ import { fromArrayBuffer } from 'geotiff';
 import fs from "fs";
 import path from 'path';
 import adminService from './admin.service';
+import cron from "node-cron";
+import { createCanvas } from 'canvas';
 
 const AIResponseDir = path.join(__dirname, "../../AIResponse"); 
 const elementsDir = path.join(__dirname, "../../elements"); 
-const tifPath = path.join(AIResponseDir, "flood_depths.tif");
+const tifPath = path.join(AIResponseDir, "high_0000.tif");
 
 interface Grid {
   width: number;
@@ -61,123 +63,83 @@ async function readGeoTIFF(filePath: string): Promise<{ matrix: number[][], widt
   return { matrix, width, height };
 }
 
-function latLonToPixel(
-  lat: number,
-  lon: number, 
-  bounds: { north: number, south: number, east: number, west: number }, 
-  width: number, 
-  height: number
-): { x: number, y: number } {
-  const x = Math.floor(((lon - bounds.west) / (bounds.east - bounds.west)) * width);
-  const y = Math.floor(((bounds.north - lat) / (bounds.north - bounds.south)) * height);
-  return { x, y };
+function isPointInPolygon(point: Point, polygon: {lat: number, lon: number}[]): boolean {
+    const x = point.lon;
+    const y = point.lat;
+    let inside = false;
+    for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+        const xi = polygon[i]!.lon, yi = polygon[i]!.lat;
+        const xj = polygon[j]!.lon, yj = polygon[j]!.lat;
+        const intersect = ((yi > y) !== (yj > y)) && 
+                          (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        if (intersect) inside = !inside;
+    }
+    return inside;
 }
 
 // Ví dụ về metadata và polygons
-const metadata: Metadata = {
-  "request_id": "sim_hue_001",
-  "timestamp": "2025-12-11T00:47:50Z",
-  "location": "Hue City",
-  "simulation_type": "static_inundation",
-  "water_level_param": 2.0,
-  "bounds": {
-    "north": 16.74602801912226,
-    "south": 15.987548023342475,
-    "east": 108.19093975546386,
-    "west": 107.01986856019406,
-    "center": {
-      "lat": 16.366788021232367,
-      "lon": 107.60540415782896
-    }
-  },
-  "grid": {
-    "width": 4109,
-    "height": 2681,
-    "resolution_meters": 30.7250757233
-  },
-  "data_stats": {
-    "max_depth_meters": 1.0,
-    "flooded_area_pixels": 45093,
-    "flooded_percentage": 0.8945653562589223,
-    "unit": "meters",
-    "nodata_value": -9999.0
-  },
-  "format": "geotiff"
-}
+const metadata: Metadata = JSON.parse(fs.readFileSync(path.join(AIResponseDir, "metadata.json"), 'utf-8'));
 
 async function process(matrix: number[][], width: number, height: number) {
     try {
         let depthStatus: {id: number, depth: number}[] = [];
-        let idMatrix: number[][] = Array.from({ length: height }, () => Array(width).fill(0));
+
         const response = await adminService.getInfoSelectedArea({
             north: metadata.bounds.north,
             south: metadata.bounds.south,
             east: metadata.bounds.east,
             west: metadata.bounds.west
         });
+
         const wardIds: number[] = response.wards.map((ward: any) => ward.id);
         console.log(`Tổng số phường/xã nhận được từ OSM: ${wardIds.length}`);
-        wardIds.forEach((wardId: number) => {
+
+        for (const wardId of wardIds) {
             const wardData = adminService.getBoard(wardId.toString());
             if (!wardData) {
                 console.log(`Không tìm thấy dữ liệu cho phường/xã ID: ${wardId}`);
-                return;
+                continue;
             }
+
             const id = wardData.id;
             const name = wardData.tags?.name || "Unknown";
-            // console.log(`Xử lý phường/xã ID: ${id}, Tên: ${name}`);
+            const outerWays = wardData.members?.filter(
+                (member: any) => member.role === "outer" && member.type === "way" && member.geometry?.length > 2
+            );
 
-            const boundary = wardData.members?.find((member: any) => member.role === "outer" && member.type === "way");
-            if (!boundary) {
-                console.log(`Không tìm thấy boundary cho phường/xã ID: ${id}`);
-                return;
+            if (!outerWays || outerWays.length === 0) {
+                console.log(`Không tìm thấy outer ways cho phường/xã ID: ${id}`);
+                continue;
             }
 
-            const coords: Point[] = boundary.geometry.map((point: any) => ({ 
-                lat: point.lat, 
-                lon: point.lon 
-            }));
-            let queue: {x: number, y: number}[] = [];
-            coords.forEach((p: Point) => {
-                const { x, y } = latLonToPixel(p.lat, p.lon, metadata.bounds, width, height);
-                if (x >= 0 && x < width && y >= 0 && y < height) {
+            let current_depth = 0, counted_pixels = 0;
+
+            for (let x = 0; x < width; x++) {
+                for (let y = 0; y < height; y++) {
                     const depth = matrix[y]![x]!;
-                    if (idMatrix[y]![x] !== 0) 
-                        return; // Đã được gán ID khác
-                    if (depth !== metadata.data_stats.nodata_value && depth > 0) {
-                        idMatrix[y]![x] = id;
-                        queue.push({x, y});
-                    }
-                } else {
-                    console.log(`WARN: Điểm (${p.lat}, ${p.lon}) chuyển sang pixel (${x}, ${y}) nằm ngoài phạm vi ảnh.`);
-                }
-            });
-            let depthCount = 0;
-            while (queue.length > 0) {
-                const { x, y } = queue.shift()!;
-                depthCount += matrix[y]![x]!;
-                const directions = [
-                    { dx: -1, dy: 0 },
-                    { dx: 1, dy: 0 },
-                    { dx: 0, dy: -1 },
-                    { dx: 0, dy: 1 }
-                ];
-                directions.forEach(({ dx, dy }) => {
-                    const nx = x + dx;
-                    const ny = y + dy;
-                    if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-                        const depth = matrix[ny]![nx]!;
-                        if (depth !== metadata.data_stats.nodata_value && depth > 0 && idMatrix[ny]![nx] === 0) {
-                            idMatrix[ny]![nx] = id;
-                            queue.push({x: nx, y: ny});
+                    const lon = metadata.bounds.west + (x + 0.5) * (metadata.bounds.east - metadata.bounds.west) / width;
+                    const lat = metadata.bounds.north - (y + 0.5) * (metadata.bounds.north - metadata.bounds.south) / height;
+
+                    // Kiểm tra từng outer way riêng biệt
+                    let inside = false;
+                    for (const way of outerWays) {
+                        if (isPointInPolygon({ lat, lon }, way.geometry)) {
+                            if (inside) inside = false;
+                            else inside = true;
                         }
+                      }
+                    if (inside) {
+                      if ((depth <= 0 || depth === metadata.data_stats.nodata_value) === false)
+                        current_depth += depth;
+                      counted_pixels++;
                     }
-                });
+                }
             }
-            // console.log(`Tổng depth cho phường/xã ID: ${id}, Tên: ${name} là ${depthCount}`);
-            depthStatus.push({id, depth: depthCount});
-        });
+            console.log(`Phường/xã: ${name} (ID: ${id}) - Độ sâu trung bình: ${current_depth/(counted_pixels || 1)} mét trên ${counted_pixels} pixels bị ngập.`);
+            depthStatus.push({ id, depth: current_depth/(counted_pixels || 1) });
+        }
         return depthStatus;
+
     } catch (error) {
         console.error("Error calling getInfoSelectedArea:", error);
     }
@@ -195,17 +157,35 @@ async function updateFilesWithFloodDepth(ans: { id: number, depth: number }[]) {
         }
 
         // Ghi mảng ans vào file floodDepthStatus.json
-        fs.writeFileSync(floodDepthStatusFilePath, JSON.stringify(ans, null, 2), 'utf-8');
+        await fs.promises.writeFile(floodDepthStatusFilePath, JSON.stringify(ans, null, 2), 'utf-8');
 
         console.log("Cập nhật thành công vào file floodDepthStatus.json.");
     } catch (error) {
         console.error("Có lỗi khi cập nhật file:", error);
     }
 }
-    
-readGeoTIFF(tifPath).then(async ({ matrix, width, height }) => {
+// Example task function
+function runMyTask() {
+  readGeoTIFF(tifPath).then(async ({ matrix, width, height }) => {
     console.log(`Matrix kích thước: ${width} x ${height}`);
     const ans = await process(matrix, width, height);
-    console.log("Kết quả cuối cùng:", ans);
     await updateFilesWithFloodDepth(ans!);
-});
+  });
+}
+
+// readGeoTIFF(tifPath).then(async ({ matrix, width, height }) => {
+//   console.log(`Matrix kích thước: ${width} x ${height}`);
+//   const ans = await process(matrix, width, height);
+//   await updateFilesWithFloodDepth(ans!);
+// });
+
+// Schedule the task
+// This runs every minute: "*/1 * * * *"
+
+export const startScheduler = () => {
+
+  cron.schedule("*/1 * * * *", () => {
+    console.log("Running scheduled task...");
+    runMyTask();
+  });
+}

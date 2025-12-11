@@ -19,9 +19,9 @@ const FLOOD_DEPTHS_PATH = path.join(process.cwd(), 'AIResponse', 'flood_depths.t
 // Time frame mapping: API parameter -> actual TIF filename
 // Frontend sends: 'now', 'future-5', 'future-30'
 const TIME_FRAME_MAP: Record<string, string> = {
-    'now': 'inundation_20251211_100500',      // 10:05:00
-    'future-5': 'inundation_20251211_101000',  // 10:10:00 (5 phút sau)
-    'future-30': 'inundation_20251211_101500', // 10:15:00 (10 phút sau)
+    'now': 'high_0000',      // 10:05:00
+    'future-5': 'high_0005',  // 10:10:00 (5 phút sau)
+    'future-30': 'high_0030', // 10:15:00 (10 phút sau)
     // Legacy support
     'past-5': 'inundation_20251211_100500',
     'future-60': 'inundation_20251211_101500'
