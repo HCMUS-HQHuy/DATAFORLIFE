@@ -38,3 +38,4 @@ Authorization: Bearer {{token}}
 ### 
 GET {{host}}{{apiPrefix}}/admin/flood-depth-status
 Content-Type: application/json
+Authorization: Bearer {{token}}

@@ -20,7 +20,7 @@ app.use(cors({
 app.use('/heatmaps', express.static(path.join(__dirname, '../public/heatmaps')));
 
 routes(app);
-startScheduler();
+// startScheduler();
 
 app.get('/', (req, res) => {
     res.send('hello from hqh');

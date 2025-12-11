@@ -184,8 +184,8 @@ function runMyTask() {
 
 export const startScheduler = () => {
 
-  cron.schedule("*/1 * * * *", () => {
+  cron.schedule("*/5 * * * *", () => {
     console.log("Running scheduled task...");
-    runMyTask();
   });
 }
+runMyTask();
