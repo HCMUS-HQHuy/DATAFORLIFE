@@ -12,7 +12,7 @@ const PORT = Number(process.env.PORT) || 8220;
 
 app.use(cors({
     origin: 'https://aqua-safe-fe.vercel.app',  // Set the specific frontend origin
-    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    methods: ['*'],  // Allow all HTTP methods
     credentials: true  // Enable credentials (cookies, etc.)
 }));
 
