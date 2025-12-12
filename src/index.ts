@@ -11,9 +11,9 @@ const app: express.Application = express();
 const PORT = Number(process.env.PORT) || 8220;
 
 app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-    credentials: true
+    origin: 'https://aqua-safe-fe.vercel.app',  // Set the specific frontend origin
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+    credentials: true  // Enable credentials (cookies, etc.)
 }));
 
 // Serve static heatmap images

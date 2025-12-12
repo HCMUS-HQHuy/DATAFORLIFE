@@ -2,7 +2,8 @@
 ### Variables
 @adminUser = admin
 @adminPass = secret
-@host = http://localhost:8220
+# @host = http://localhost:8220
+@host = https://257c3d57bfaa.ngrok-free.app
 @apiPrefix = /api
 
 @token = {{loginsuccess.response.body.token}}
